@@ -1,19 +1,9 @@
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import readXlsxFile from "read-excel-file";
 import { addData } from "../redux/dataSlice";
 
 export default function InputFiles() {
-  const [dataExcel, setDataExcel] = useState({
-    input1: [],
-    input2: [],
-    input3: [],
-  });
-
   const dispatch = useDispatch();
-
-  const totalData = useSelector((state) => state.dataExcelJSON);
-  console.log("desde redux", totalData);
 
   //Carga de archivos excel a JSON
   const uploadExcel = async (event) => {
@@ -46,23 +36,9 @@ export default function InputFiles() {
         }
       });
 
-      setDataExcel({ ...dataExcel, [fileName]: jsonObject });
-      dispatch(addData({fileName, jsonObject}));
+      dispatch(addData({ fileName, jsonObject }));
     });
   };
-
-  // const empty = Object.values(dataExcel).map((value) => {
-  //   if (value.length === 0) {
-  //     return true;
-  //   }
-  // });
-
-  // console.log(empty);
-
-  // if (!empty.includes(true)) {
-  //   console.log("sin elementos vacios");
-  //   dispatch(addData(dataExcel));
-  // }
 
   return (
     <div>

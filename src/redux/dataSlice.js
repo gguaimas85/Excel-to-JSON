@@ -11,9 +11,7 @@ export const dataSlice = createSlice({
   initialState,
   reducers: {
     addData: (state, action) => {
-      console.log(state, action.payload);
-
-      const {fileName, jsonObject} = action.payload
+      const { fileName, jsonObject } = action.payload;
       state[fileName] = jsonObject;
     },
   },

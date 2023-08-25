@@ -1,8 +1,12 @@
 import { useRef } from "react";
+import { useSelector } from "react-redux";
 import { useReactToPrint } from "react-to-print";
+import { mergeOneTwo, mergeStock, reduceID } from "../services/middleware";
 
 export default function TableData() {
   const componentRef = useRef();
+
+  const dataStock = useSelector((state) => state.dataExcelJSON);
 
   const TABLE_HEADERS = [
     "ID",
@@ -13,6 +17,15 @@ export default function TableData() {
     "Cantidad",
     "Ubicacion",
   ];
+
+  const reduceId = reduceID(dataStock.input3);
+
+  const minMaxObj = mergeOneTwo(dataStock.input1, dataStock.input2);
+
+  console.log(dataStock.input2);
+  console.log("Union de 1 y 2", minMaxObj);
+  const restockObject = mergeStock(minMaxObj, reduceId);
+  console.log("Objeto final", restockObject);
 
   const printTable = useReactToPrint({
     content: () => componentRef.current,
@@ -51,33 +64,20 @@ export default function TableData() {
             ))}
           </tr>
         </thead>
-        {/* <tbody>
-          {mergeObjects.map((data, index) => {
-            const total = data.Stock.map((el) => el.cantidad).reduce(
-              (acc, current) => acc + current
-            );
-
-            const totalVencimiento = data.Stock.filter(
-              (el) => el.Vencimiento != undefined
-            );
-
+        <tbody>
+          {minMaxObj.map((data, index) => {
             return (
               <tr key={index}>
-                <th scope="row">{data.ID}</th>
-                <td>{data.Producto}</td>
+                <th scope="row">{data.Codigo}</th>
+                <td>{data.TextobrevdeMaterial}</td>
                 <td>{data.Cliente}</td>
                 <td>{data.Minimo}</td>
                 <td>{data.Maximo}</td>
-                <td>{total === 0 ? "" : total}</td>
-                {totalVencimiento.map((data, i) => (
-                  <td key={i} colSpan={data.length}>
-                    {data.Ubicacion}
-                  </td>
-                ))}
+                <td>{data.StockTotal}</td>
               </tr>
             );
           })}
-        </tbody> */}
+        </tbody>
       </table>
     </div>
   );
