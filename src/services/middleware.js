@@ -100,7 +100,12 @@ const mergeStock = (array2, array3) => {
     return acc;
   }, []);
 
-  arrObj1.map((el) => (el.GeneralStock = unifiedLocations(el.GeneralStock)));
+  arrObj1.map((el) => {
+    if (el.GeneralStock != undefined) {
+      console.log("Ver estado del General Stock", el.GeneralStock);
+      el.GeneralStock = unifiedLocations(el.GeneralStock);
+    }
+  }); //(el.GeneralStock = unifiedLocations(el.GeneralStock)));
 
   return arrObj1;
 };

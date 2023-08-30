@@ -8,8 +8,6 @@ export default function TableData() {
 
   const dataStock = useSelector((state) => state.dataExcelJSON);
 
-  //console.log(dataStock);
-
   const TABLE_HEADERS = ["ID", "Producto", "Cliente", "Cantidad", "Ubicacion"];
 
   const restockObject = objectGeneralStock(dataStock);
