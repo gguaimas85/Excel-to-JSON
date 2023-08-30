@@ -1,31 +1,20 @@
 import { useRef } from "react";
 import { useSelector } from "react-redux";
 import { useReactToPrint } from "react-to-print";
-import { mergeOneTwo, mergeStock, reduceID } from "../services/middleware";
+import { objectGeneralStock } from "../services/middleware";
 
 export default function TableData() {
   const componentRef = useRef();
 
   const dataStock = useSelector((state) => state.dataExcelJSON);
 
-  const TABLE_HEADERS = [
-    "ID",
-    "Producto",
-    "Cliente",
-    "Minimo",
-    "Maximo",
-    "Cantidad",
-    "Ubicacion",
-  ];
+  //console.log(dataStock);
 
-  const reduceId = reduceID(dataStock.input3);
+  const TABLE_HEADERS = ["ID", "Producto", "Cliente", "Cantidad", "Ubicacion"];
 
-  const minMaxObj = mergeOneTwo(dataStock.input1, dataStock.input2);
+  const restockObject = objectGeneralStock(dataStock);
 
-  console.log(dataStock.input2);
-  console.log("Union de 1 y 2", minMaxObj);
-  const restockObject = mergeStock(minMaxObj, reduceId);
-  console.log("Objeto final", restockObject);
+  console.log(restockObject);
 
   const printTable = useReactToPrint({
     content: () => componentRef.current,
@@ -65,15 +54,12 @@ export default function TableData() {
           </tr>
         </thead>
         <tbody>
-          {minMaxObj.map((data, index) => {
+          {restockObject.map((data, index) => {
             return (
               <tr key={index}>
                 <th scope="row">{data.Codigo}</th>
                 <td>{data.TextobrevdeMaterial}</td>
-                <td>{data.Cliente}</td>
-                <td>{data.Minimo}</td>
-                <td>{data.Maximo}</td>
-                <td>{data.StockTotal}</td>
+                <td>{data.Stock}</td>
               </tr>
             );
           })}
