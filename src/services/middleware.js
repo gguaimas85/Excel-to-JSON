@@ -105,7 +105,7 @@ const mergeStock = (array2, array3) => {
       console.log("Ver estado del General Stock", el.GeneralStock);
       el.GeneralStock = unifiedLocations(el.GeneralStock);
     }
-  }); //(el.GeneralStock = unifiedLocations(el.GeneralStock)));
+  }); 
 
   return arrObj1;
 };
