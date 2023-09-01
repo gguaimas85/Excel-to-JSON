@@ -13,7 +13,7 @@ const reduceID = (array) => {
 const mergeOneTwo = (array1, array2) => {
   const arrObj = array1.concat(array2);
 
-  const arrObj2 = arrObj.reduce((acc, current) => {
+  const finalObj = arrObj.reduce((acc, current) => {
     const foundItem = acc.find(
       (element) =>
         element.Cliente === current.Ce &&
@@ -50,13 +50,13 @@ const mergeOneTwo = (array1, array2) => {
     return acc;
   }, []);
 
-  return arrObj2;
+  return finalObj;
 };
 
 const mergeStock = (array2, array3) => {
-  const arrObj = array2.concat(array3);
+  const arrObjStock = array2.concat(array3);
 
-  const arrObj1 = arrObj.reduce((acc, current) => {
+  const arrObj = arrObjStock.reduce((acc, current) => {
     const foundItem = acc.find(
       (element) =>
         element.Codigo == current.Codigo &&
@@ -100,14 +100,13 @@ const mergeStock = (array2, array3) => {
     return acc;
   }, []);
 
-  arrObj1.map((el) => {
-    if (el.GeneralStock != undefined) {
-      console.log("Ver estado del General Stock", el.GeneralStock);
-      el.GeneralStock = unifiedLocations(el.GeneralStock);
-    }
-  }); 
+  arrObj.map((el) => {
+    el.GeneralStock
+      ? (el.GeneralStock = unifiedLocations(el.GeneralStock))
+      : el;
+  });
 
-  return arrObj1;
+  return arrObj;
 };
 
 const unifiedLocations = (array) => {
@@ -117,22 +116,23 @@ const unifiedLocations = (array) => {
     );
 
     if (foundItem) {
-      foundItem.Ubicaciones = foundItem.Ubicaciones
-        ? [
-            ...foundItem.Ubicaciones,
-            {
-              Vencimiento: current.Vencimiento,
-              CantidadUbicacion: current.CantidadUbicacion,
-              Ubicacion: current.Ubicacion,
-            },
-          ]
-        : [
-            {
-              Vencimiento: current.Vencimiento,
-              CantidadUbicacion: current.CantidadUbicacion,
-              Ubicacion: current.Ubicacion,
-            },
-          ];
+      console.log("vencimiento", current.Vencimiento);
+      (foundItem.Vencimiento = current.Vencimiento),
+        (foundItem.Ubicaciones = foundItem.Ubicaciones
+          ? [
+              ...foundItem.Ubicaciones,
+
+              {
+                CantidadUbicacion: current.CantidadUbicacion,
+                Ubicacion: current.Ubicacion,
+              },
+            ]
+          : [
+              {
+                CantidadUbicacion: current.CantidadUbicacion,
+                Ubicacion: current.Ubicacion,
+              },
+            ]);
     } else {
       acc.push({
         idFabricacion: current.idFabricacion,
