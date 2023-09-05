@@ -101,9 +101,11 @@ const mergeStock = (array2, array3) => {
   }, []);
 
   arrObj.map((el) => {
-    el.GeneralStock
-      ? (el.GeneralStock = unifiedLocations(el.GeneralStock))
-      : el;
+    if (el.GeneralStock) {
+      el.GeneralStock = unifiedLocations(el.GeneralStock);
+
+      sortUbications(el.GeneralStock);
+    }
   });
 
   return arrObj;
@@ -116,7 +118,6 @@ const unifiedLocations = (array) => {
     );
 
     if (foundItem) {
-      console.log("vencimiento", current.Vencimiento);
       (foundItem.Vencimiento = current.Vencimiento),
         (foundItem.Ubicaciones = foundItem.Ubicaciones
           ? [
@@ -145,6 +146,14 @@ const unifiedLocations = (array) => {
 
   return locations;
 };
+
+const sortUbications = (array) => {
+  array.sort((a, b) => (a.Vencimiento > b.Vencimiento ? -1 : 1));
+};
+
+// const findUbications = (array) => {
+//   console.log("elemento dentro del stock general", array);
+// };
 
 export const objectGeneralStock = (dataObject) => {
   const { input1, input2, input3 } = dataObject;
