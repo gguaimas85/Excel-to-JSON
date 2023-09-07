@@ -104,7 +104,9 @@ const mergeStock = (array2, array3) => {
     if (el.GeneralStock) {
       el.GeneralStock = unifiedLocations(el.GeneralStock);
 
-      sortUbications(el.GeneralStock);
+      sortVto(el.GeneralStock);
+
+      //findUbications(el);
     }
   });
 
@@ -147,13 +149,62 @@ const unifiedLocations = (array) => {
   return locations;
 };
 
-const sortUbications = (array) => {
-  array.sort((a, b) => (a.Vencimiento > b.Vencimiento ? -1 : 1));
+const sortVto = (array) => {
+  array.sort((a, b) =>
+    a.Vencimiento > b.Vencimiento
+      ? -1
+      : a.Vencimiento < b.Vencimiento
+      ? 1
+      : a.idFabricacion - b.idFabricacion
+  );
 };
 
-// const findUbications = (array) => {
-//   console.log("elemento dentro del stock general", array);
-// };
+const findUbications = (array) => {
+  const { TextobrevdeMaterial, Stock } = array;
+
+  let stock = array.GeneralStock;
+  let ubications = [];
+  let min = 200;
+  let max = 500;
+  let acc = 0;
+
+  if (stock === undefined) return array;
+
+  for (let i = 0; i < stock.length; i++) {
+    if (stock[i].Ubicaciones) {
+      for (let j = 0; j < stock[i].Ubicaciones.length; j++) {
+        let tempQ = parseInt(stock[i].Ubicaciones[j].CantidadUbicacion);
+        let tempU = stock[i].Ubicaciones[j].Ubicacion;
+
+        if (tempU == "Dir1") {
+          acc += tempQ;
+        }
+
+        if (acc < min && tempU != "Dir1") {
+          ubications.push({
+            Ubicacion: tempU,
+            TextobrevdeMaterial,
+            Stock,
+            Cantidad: tempQ,
+          });
+          acc += tempQ;
+        }
+
+        if (acc > min && acc < max && tempU != "Dir1") {
+          ubications.push({
+            Ubicacion: tempU,
+            TextobrevdeMaterial,
+            Stock,
+            Cantidad: tempQ,
+          });
+          acc += tempQ;
+        }
+      }
+    }
+  }
+
+  return ubications;
+};
 
 export const objectGeneralStock = (dataObject) => {
   const { input1, input2, input3 } = dataObject;
@@ -164,5 +215,7 @@ export const objectGeneralStock = (dataObject) => {
 
   const generalData = mergeStock(minMaxObj, dataReduceId);
 
-  return generalData;
+  const objectUbications = generalData.map((el) => findUbications(el));
+
+  return objectUbications;
 };

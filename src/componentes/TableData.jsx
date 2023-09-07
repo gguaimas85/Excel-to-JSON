@@ -8,7 +8,7 @@ export default function TableData() {
 
   const dataStock = useSelector((state) => state.dataExcelJSON);
 
-  const TABLE_HEADERS = ["Producto", "Cliente", "Cantidad", "Ubicacion"];
+  const TABLE_HEADERS = ["Producto", "Cliente", "Ubicacion"];
 
   const restockObject = objectGeneralStock(dataStock);
 
@@ -57,6 +57,7 @@ export default function TableData() {
               <tr key={index}>
                 <td>{data.TextobrevdeMaterial}</td>
                 <td>{data.Stock}</td>
+                <td>{data.Ubicacion}</td>
               </tr>
             );
           })}
