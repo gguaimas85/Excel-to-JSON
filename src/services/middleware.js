@@ -159,13 +159,13 @@ const sortVto = (array) => {
   );
 };
 
-const findUbications = (array) => {
+const findUbications = (array, ubications) => {
   const { TextobrevdeMaterial, Stock } = array;
 
   let stock = array.GeneralStock;
-  let ubications = [];
-  let min = 200;
-  let max = 500;
+
+  let min = array.Minimo;
+  let max = array.Maximo;
   let acc = 0;
 
   if (stock === undefined) return array;
@@ -202,11 +202,10 @@ const findUbications = (array) => {
       }
     }
   }
-
-  return ubications;
 };
 
 export const objectGeneralStock = (dataObject) => {
+  let ubications = [];
   const { input1, input2, input3 } = dataObject;
 
   const minMaxObj = mergeOneTwo(input1, input2);
@@ -215,7 +214,9 @@ export const objectGeneralStock = (dataObject) => {
 
   const generalData = mergeStock(minMaxObj, dataReduceId);
 
-  const objectUbications = generalData.map((el) => findUbications(el));
+  generalData.map((el) => {
+    findUbications(el, ubications);
+  });
 
-  return objectUbications;
+  return ubications;
 };
