@@ -105,8 +105,6 @@ const mergeStock = (array2, array3) => {
       el.GeneralStock = unifiedLocations(el.GeneralStock);
 
       sortVto(el.GeneralStock);
-
-      //findUbications(el);
     }
   });
 
@@ -185,16 +183,19 @@ const findUbications = (array, ubications) => {
             Ubicacion: tempU,
             TextobrevdeMaterial,
             Stock,
+            Lote: stock[i].idFabricacion,
             Cantidad: tempQ,
           });
+
           acc += tempQ;
         }
 
-        if (acc > min && acc < max && tempU != "Dir1") {
+        if (acc < max && tempU != "Dir1" && i > 0) {
           ubications.push({
             Ubicacion: tempU,
             TextobrevdeMaterial,
             Stock,
+            Lote: stock[i].idFabricacion,
             Cantidad: tempQ,
           });
           acc += tempQ;
