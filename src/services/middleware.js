@@ -65,11 +65,12 @@ const mergeStock = (array2, array3) => {
     );
 
     if (foundItem) {
+      let Vencimiento = current.Vencimiento.split("/").reverse().join("/");
       foundItem.GeneralStock = foundItem.GeneralStock
         ? [
             ...foundItem.GeneralStock,
             {
-              Vencimiento: current.Vencimiento,
+              Vencimiento,
               CantidadUbicacion: current.CantidadStock,
               idFabricacion: current.idFabricacion,
               Ubicacion: current.Direccion,
@@ -77,7 +78,7 @@ const mergeStock = (array2, array3) => {
           ]
         : [
             {
-              Vencimiento: current.Vencimiento,
+              Vencimiento,
               CantidadUbicacion: current.CantidadStock,
               idFabricacion: current.idFabricacion,
               Ubicacion: current.Direccion,
@@ -104,7 +105,7 @@ const mergeStock = (array2, array3) => {
     if (el.GeneralStock) {
       el.GeneralStock = unifiedLocations(el.GeneralStock);
 
-      sortVto(el.GeneralStock);
+      el.GeneralStock = sortVto(el.GeneralStock);
     }
   });
 
@@ -148,13 +149,15 @@ const unifiedLocations = (array) => {
 };
 
 const sortVto = (array) => {
-  array.sort((a, b) =>
-    a.Vencimiento > b.Vencimiento
+  const sortedElements = array.sort((a, b) =>
+    a.Vencimiento < b.Vencimiento
       ? -1
       : a.Vencimiento < b.Vencimiento
       ? 1
       : a.idFabricacion - b.idFabricacion
   );
+
+  return sortedElements;
 };
 
 const findUbications = (array, ubications) => {
@@ -165,6 +168,7 @@ const findUbications = (array, ubications) => {
   let min = array.Minimo;
   let max = array.Maximo;
   let acc = 0;
+  let reStock = false;
 
   if (stock === undefined) return array;
 
@@ -174,11 +178,15 @@ const findUbications = (array, ubications) => {
         let tempQ = parseInt(stock[i].Ubicaciones[j].CantidadUbicacion);
         let tempU = stock[i].Ubicaciones[j].Ubicacion;
 
-        if (tempU == "Dir1") {
+        if (["Dir1", "Dir2"].includes(tempU)) {
           acc += tempQ;
         }
 
-        if (acc < min && tempU != "Dir1") {
+        if (acc < min) {
+          reStock = true;
+        }
+
+        if (reStock && ["Dir1", "Dir2"].includes(tempU) == false) {
           ubications.push({
             Ubicacion: tempU,
             TextobrevdeMaterial,
@@ -190,15 +198,8 @@ const findUbications = (array, ubications) => {
           acc += tempQ;
         }
 
-        if (acc < max && tempU != "Dir1" && i > 0) {
-          ubications.push({
-            Ubicacion: tempU,
-            TextobrevdeMaterial,
-            Stock,
-            Lote: stock[i].idFabricacion,
-            Cantidad: tempQ,
-          });
-          acc += tempQ;
+        if (acc > max) {
+          reStock = false;
         }
       }
     }
@@ -207,6 +208,7 @@ const findUbications = (array, ubications) => {
 
 export const objectGeneralStock = (dataObject) => {
   let ubications = [];
+
   const { input1, input2, input3 } = dataObject;
 
   const minMaxObj = mergeOneTwo(input1, input2);
@@ -215,7 +217,9 @@ export const objectGeneralStock = (dataObject) => {
 
   const generalData = mergeStock(minMaxObj, dataReduceId);
 
-  generalData.map((el) => {
+  console.log(generalData);
+
+  generalData.forEach((el) => {
     findUbications(el, ubications);
   });
 

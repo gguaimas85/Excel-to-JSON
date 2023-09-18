@@ -12,8 +12,6 @@ export default function TableData() {
 
   const restockObject = objectGeneralStock(dataStock);
 
-  console.log(restockObject);
-
   const printTable = useReactToPrint({
     content: () => componentRef.current,
     documentTitle: "product-data",
