@@ -17,7 +17,7 @@ const mergeOneTwo = (array1, array2) => {
     const foundItem = acc.find(
       (element) =>
         element.Cliente === current.Ce &&
-        element.Material === current.Codigo &&
+        element.Codigo === current.Material &&
         element.Almacen === current.Finalidad
     );
 
