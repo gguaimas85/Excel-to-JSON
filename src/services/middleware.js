@@ -55,6 +55,7 @@ const mergeOneTwo = (array1, array2) => {
 
 const mergeStock = (array2, array3) => {
   const arrObjStock = array2.concat(array3);
+  let sector = "";
 
   const arrObj = arrObjStock.reduce((acc, current) => {
     const foundItem = acc.find(
@@ -66,6 +67,11 @@ const mergeStock = (array2, array3) => {
 
     if (foundItem) {
       let Vencimiento = current.Vencimiento.split("/").reverse().join("/");
+
+      if (current.Direccion === "Dir2") sector = "Seco";
+      if (current.Direccion == "Dir1") sector = "Frio";
+
+      foundItem.Sector = sector;
       foundItem.GeneralStock = foundItem.GeneralStock
         ? [
             ...foundItem.GeneralStock,
@@ -167,6 +173,7 @@ const findUbications = (array, ubications) => {
 
   let min = array.Minimo;
   let max = array.Maximo;
+  let sector = array.Sector;
   let acc = 0;
   let reStock = false;
 
@@ -193,6 +200,7 @@ const findUbications = (array, ubications) => {
             Stock,
             Lote: stock[i].idFabricacion,
             Cantidad: tempQ,
+            sector
           });
 
           acc += tempQ;
@@ -216,8 +224,6 @@ export const objectGeneralStock = (dataObject) => {
   const dataReduceId = reduceID(input3);
 
   const generalData = mergeStock(minMaxObj, dataReduceId);
-
-  console.log(generalData);
 
   generalData.forEach((el) => {
     findUbications(el, ubications);
